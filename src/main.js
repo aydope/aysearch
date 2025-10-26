@@ -114,5 +114,6 @@ if (SpeechRecognition) {
 
   info.textContent = 'Voice Commands: "stop recording", "reset input", "go"';
 } else {
-  info.textContent = "Your browser does not support Speech Recognition";
+  info.textContent =
+    "Your browser does not support Speech Recognition\n Try Google Chrome!";
 }
