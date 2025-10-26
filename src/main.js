@@ -78,59 +78,41 @@ searchForm.addEventListener("submit", (e) => {
 
 const SpeechRecognition =
   window.SpeechRecognition || window.webkitSpeechRecognition;
-const isChrome = !!SpeechRecognition;
 
-if (isChrome) {
-  if (SpeechRecognition) {
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.lang = "fa-IR";
+if (SpeechRecognition) {
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.lang = "fa-IR";
 
-    micBtn.addEventListener("click", () => {
-      if (micIcon.classList.contains("fa-microphone")) recognition.start();
-      else recognition.stop();
-    });
+  micBtn.addEventListener("click", () => {
+    if (micIcon.classList.contains("fa-microphone")) recognition.start();
+    else recognition.stop();
+  });
 
-    recognition.addEventListener("start", () => {
-      micIcon.classList.replace("fa-microphone", "fa-microphone-slash");
-      searchInput.focus();
-    });
+  recognition.addEventListener("start", () => {
+    micIcon.classList.replace("fa-microphone", "fa-microphone-slash");
+    searchInput.focus();
+  });
 
-    recognition.addEventListener("end", () => {
-      micIcon.classList.replace("fa-microphone-slash", "fa-microphone");
-      searchInput.focus();
-    });
+  recognition.addEventListener("end", () => {
+    micIcon.classList.replace("fa-microphone-slash", "fa-microphone");
+    searchInput.focus();
+  });
 
-    recognition.addEventListener("result", (event) => {
-      const transcript = event.results[event.resultIndex][0].transcript;
-      if (transcript.toLowerCase().trim() === "stop recording")
-        recognition.stop();
-      else if (!searchInput.value) searchInput.value = transcript;
-      else {
-        if (transcript.toLowerCase().trim() === "go") searchForm.submit();
-        else if (transcript.toLowerCase().trim() === "reset input")
-          searchInput.value = "";
-        else searchInput.value = transcript;
-      }
-    });
+  recognition.addEventListener("result", (event) => {
+    const transcript = event.results[event.resultIndex][0].transcript;
+    if (transcript.toLowerCase().trim() === "stop recording")
+      recognition.stop();
+    else if (!searchInput.value) searchInput.value = transcript;
+    else {
+      if (transcript.toLowerCase().trim() === "go") searchForm.submit();
+      else if (transcript.toLowerCase().trim() === "reset input")
+        searchInput.value = "";
+      else searchInput.value = transcript;
+    }
+  });
 
-    info.textContent = 'Voice Commands: "stop recording", "reset input", "go"';
-  } else {
-    info.textContent = "Your browser does not support Speech Recognition";
-  }
-} else if (window.annyang) {
-  const commands = {
-    "reset input": () => {
-      searchInput.value = "";
-    },
-    go: () => {
-      searchForm.submit();
-    },
-  };
-  annyang.addCommands(commands);
-  annyang.start({ autoRestart: true, continuous: true });
-  info.textContent = 'Voice Commands: "reset input", "go" (Fallback)';
+  info.textContent = 'Voice Commands: "stop recording", "reset input", "go"';
 } else {
   info.textContent = "Your browser does not support Speech Recognition";
-  micBtn.style.display = "none";
 }
